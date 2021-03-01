@@ -9,8 +9,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-var action *string = flag.String("action", "ssh", "功能 ssh: 远程连接 wake: 开机")
-var device *string = flag.String("d", "mac", "操作的设备 mac nas")
+var device *string = flag.String("d", "mac", "操作的设备 mac/nas")
 
 func init() {
 	flag.Usage = usage
@@ -18,12 +17,15 @@ func init() {
 
 var usage = func() {
 	fmt.Fprintf(flag.CommandLine.Output(), "tools 使用功能\n")
+	fmt.Fprintf(flag.CommandLine.Output(), "action 功能:\n")
+	fmt.Fprintf(flag.CommandLine.Output(), "	ssh ssh连接\n")
+	fmt.Fprintf(flag.CommandLine.Output(), "	wake 远程开机\n")
 	flag.PrintDefaults()
 }
 
 func main() {
 	flag.Parse()
-	router:=fmt.Sprintf("%s",*action)
+	router:=os.Args[1]
 	fmt.Println("输入的参数：" + router)
 	uname,ip,_:=GetInfo(fmt.Sprintf("%s",*device))
     switch {
