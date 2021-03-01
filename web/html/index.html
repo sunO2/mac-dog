@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wake测试</title>
+    <script language="javascript">
+        function wake(mac_address){
+            var ajaxObj = new XMLHttpRequest();
+            ajaxObj.open('get',"./wake?mac_address=" + mac_address);
+            ajaxObj.send();
+        }
+    </script>
+</head>
+<body>
+    <h1>C语言中文网</h1>
+    <button  onclick="wake('80:80:80:80')">远程开机s</button>
+</body>
+</html>
