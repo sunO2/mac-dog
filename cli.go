@@ -23,9 +23,13 @@ var usage = func() {
 	flag.PrintDefaults()
 }
 
+func Parse(point int){
+	flag.CommandLine.Parse(os.Args[point:])
+}
+
 func main() {
-	flag.Parse()
 	router:=os.Args[1]
+	Parse(2)
 	fmt.Println("输入的参数：" + router)
 	uname,ip,_:=GetInfo(fmt.Sprintf("%s",*device))
     switch {
