@@ -5,6 +5,7 @@ import (
 	"container/list"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -12,14 +13,37 @@ import (
 	"strings"
 )
 
+//入职输出
+var loger *log.Logger
+
+func init(){
+  user,uerr:=user.Current()
+  var homeDir string
+  if nil != uerr{
+    loger.Println(uerr)
+   return
+  }
+
+  homeDir = user.HomeDir
+
+  log.SetPrefix("MAC_DOG: ")
+  log.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)
+  file := homeDir + "/develop/mac-dog/mac_dog.log"
+  logFile, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+  if nil != err{
+    fmt.Println(err)
+  }
+  loger = log.New(logFile,"[MAC_DOG]",log.LstdFlags|log.Lshortfile|log.LUTC)
+}
+
 ///离线设备
 func offline(offlineMac string){
-  fmt.Println("离线设备：" + offlineMac)
+  loger.Println("离线设备：" + offlineMac)
 }
 
 ///在线设备
 func online(onlineMac string){
-  fmt.Println("上线设备：" + onlineMac)
+  loger.Println("上线设备：" + onlineMac)
 }
 
 func listString(list []string) string{
@@ -61,23 +85,23 @@ func main(){
   }else {
      ip = os.Args[1]
   }
-  fmt.Println("正在扫描： " + ip)
+  loger.Println("正在扫描： " + ip)
   cmd:=exec.Command("/bin/sh","-c","sudo nmap -sP " + ip)
   if whoami,err = cmd.Output(); err != nil{
-    fmt.Println(err)
+    loger.Println(err)
     return
   }
   user,uerr:=user.Current()
   var homeDir string
   if nil != uerr{
-   fmt.Println(uerr)
+    loger.Println(uerr)
    return
   }
 
   homeDir = user.HomeDir
   file,e := os.OpenFile(homeDir+"/.maclist",os.O_CREATE|os.O_RDWR,0666)
   if e != nil {
-    fmt.Println("读取文件：文件打开失败",e)
+    loger.Println("读取文件：文件打开失败",e)
     return
   }
   defer file.Close()
@@ -85,7 +109,7 @@ func main(){
   buf,err := reader.ReadBytes('\n')
   if err != nil {
     if err != io.EOF{
-     fmt.Println(" error = ",err)
+      loger.Println(" error = ",err)
      return
     }
   }
@@ -94,7 +118,7 @@ func main(){
   fileMacList := strings.Split(fileMacstring,",")
   reg:=regexp.MustCompile("[A-F\\d]{2}:[A-F\\d]{2}:[A-F\\d]{2}:[A-F\\d]{2}:[A-F\\d]{2}:[A-F\\d]{2}")
   if reg==nil {
-    fmt.Println("正则异常")
+    loger.Println("正则异常")
     return
   }
   result:=reg.FindAllStringSubmatch(string(whoami),-1)
@@ -106,9 +130,9 @@ func main(){
           online(deviceMac)
     }
   }
-   fmt.Println("")
-   fmt.Println("")
-   fmt.Println("")
+  loger.Println("")
+  loger.Println("")
+  loger.Println("")
   for ii := 0; ii < len(fileMacList); ii++ {
     if !contain(MACList,fileMacList[ii]){
        offline(fileMacList[ii])
@@ -116,11 +140,11 @@ func main(){
   }
 
   maclist := listString(MACList)
-  fmt.Println("列表文件已保存")
+  loger.Println("列表文件已保存")
 
    file,e = os.OpenFile(homeDir+"/.maclist",os.O_TRUNC|os.O_CREATE|os.O_RDWR,0666)
    if e != nil {
-    fmt.Println("写入文件：文件打开失败",e)
+    loger.Println("写入文件：文件打开失败",e)
     return
   }
   defer file.Close()
