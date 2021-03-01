@@ -26,7 +26,6 @@ func main() {
 	router:=fmt.Sprintf("%s",*action)
 	fmt.Println("输入的参数：" + router)
 	uname,ip,_:=GetInfo(fmt.Sprintf("%s",*device))
-	// fmt.Sprintln("uname: %s  ip: %s",uname,ip)
     switch {
 		case router == "ssh":
 			SshLogin(uname,ip,22)
@@ -65,7 +64,7 @@ func SshLogin(uname string,ip string,port int){
 	fmt.Println("请输入密码")
 	var password string
 	fmt.Scanln(&password)
-	clinet,err:=ssh.Dial("tcp",fmt.Sprintf("%d",port),&ssh.ClientConfig{
+	clinet,err:=ssh.Dial("tcp",fmt.Sprintf("%s:%d",ip,port),&ssh.ClientConfig{
 		User: uname,
 		Auth: []ssh.AuthMethod{ssh.Password(fmt.Sprintf(password))},
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
