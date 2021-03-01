@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/exec"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -28,15 +29,16 @@ func Parse(point int){
 }
 
 func main() {
+	Parse(2)///解析 flag 参数
 	router:=os.Args[1]
-	Parse(2)
-	fmt.Println("输入的参数：" + router)
-	uname,ip,_:=GetInfo(fmt.Sprintf("%s",*device))
+	devices := fmt.Sprintf("%s",*device)
+	uname,ip,mac:=GetInfo(devices)
     switch {
 		case router == "ssh":
 			SshLogin(uname,ip,22)
 			return
 		case router == "wake":
+			wake(mac)
 			return
 		default:
 			usage()
@@ -44,7 +46,6 @@ func main() {
 }
 
 func GetInfo(channel string)(string,string,string){
-	fmt.Println("获取渠道" + channel)
 	switch{
 		case channel == "nas":
 			return os.Getenv("NAS_UNAME"),os.Getenv("NAS_IP"),os.Getenv("NAS_MAC")
@@ -53,6 +54,17 @@ func GetInfo(channel string)(string,string,string){
 			return os.Getenv("MINI_UNAME"),os.Getenv("MINI_IP"),os.Getenv("MINI_MAC")
 	}
 	return os.Getenv("MINI_UNAME"),os.Getenv("MINI_IP"),os.Getenv("MINI_MAC")
+}
+
+func wake(deviceMac string){
+	cmd:=exec.Command("/bin/sh","-c","sudo etherwake -b -i wlan0"+deviceMac)
+	var output []byte
+	var err error
+	output,err = cmd.Output()
+	if nil != err{
+		fmt.Println(err)
+	}
+	fmt.Println(string(output))
 }
 
 /**
@@ -74,7 +86,7 @@ func SshLogin(uname string,ip string,port int){
 		User: uname,
 		Auth: []ssh.AuthMethod{ssh.Password(fmt.Sprintf(password))},
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
-			fmt.Println("ssh 登录：address:" + remote.String())
+			fmt.Println("ssh 登录：address:" + remote.String() + "-------->>>>>>  hostName: " + hostname)
 			return nil
 		},
 	})
