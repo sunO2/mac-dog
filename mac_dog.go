@@ -62,7 +62,7 @@ func main(){
      ip = os.Args[1]
   }
   fmt.Println("正在扫描： " + ip)
-  cmd:=exec.Command("/bin/sh","-c","nmap -sP " + ip)
+  cmd:=exec.Command("/bin/sh","-c","sudo nmap -sP " + ip)
   if whoami,err = cmd.Output(); err != nil{
     fmt.Println(err)
     return
