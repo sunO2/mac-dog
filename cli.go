@@ -35,9 +35,11 @@ func main() {
 	uname,ip,mac:=GetInfo(devices)
     switch {
 		case router == "ssh":
+			fmt.Println("ssh 连接：device: " + devices)
 			SshLogin(uname,ip,22)
 			return
 		case router == "wake":
+			fmt.Println("远程开机：device: " + devices)
 			wake(mac)
 			return
 		default:
@@ -50,12 +52,14 @@ func GetInfo(channel string)(string,string,string){
 		case channel == "nas":
 			return os.Getenv("NAS_UNAME"),os.Getenv("NAS_IP"),os.Getenv("NAS_MAC")
 		case channel == "mac":
-			fmt.Println("获取渠道" + channel)
 			return os.Getenv("MINI_UNAME"),os.Getenv("MINI_IP"),os.Getenv("MINI_MAC")
 	}
 	return os.Getenv("MINI_UNAME"),os.Getenv("MINI_IP"),os.Getenv("MINI_MAC")
 }
 
+/**
+ 远程开机
+*/
 func wake(deviceMac string){
 	cmd:=exec.Command("/bin/sh","-c","sudo etherwake -b -i wlan0"+deviceMac)
 	var output []byte
