@@ -53,9 +53,14 @@ func containList(list list.List,contain string) bool {
 }
 
 func main(){
-  ip := os.Args[1]
   var err error
   var whoami []byte
+  var ip string
+  if len(os.Args) <= 1{
+     ip = "192.168.0.*"
+  }else {
+     ip = os.Args[1]
+  }
   fmt.Println("正在扫描： " + ip)
   cmd:=exec.Command("/bin/sh","-c","nmap -sP " + ip)
   if whoami,err = cmd.Output(); err != nil{
