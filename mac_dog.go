@@ -28,7 +28,7 @@ func init(){
 
   log.SetPrefix("MAC_DOG: ")
   log.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)
-  file := homeDir + "/develop/mac-dog/mac_dog.log"
+  file := homeDir + "/develop/mac_dog/mac_dog.log"
   logFile, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
   if nil != err{
     fmt.Println(err)
