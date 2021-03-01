@@ -33,7 +33,7 @@ func init(){
   if nil != err{
     fmt.Println(err)
   }
-  loger = log.New(logFile,"[MAC_DOG]",log.LstdFlags|log.Lshortfile|log.LUTC)
+  loger = log.New(logFile,"[MAC_DOG]",log.LstdFlags|log.Lshortfile)
 }
 
 ///离线设备
