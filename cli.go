@@ -61,7 +61,7 @@ func GetInfo(channel string)(string,string,string){
  远程开机
 */
 func wake(deviceMac string){
-	cmd:=exec.Command("/bin/sh","-c","sudo etherwake -b -i wlan0"+deviceMac)
+	cmd:=exec.Command("/bin/sh","-c","sudo etherwake -b -i wlan0 "+deviceMac)
 	var output []byte
 	var err error
 	output,err = cmd.Output()
