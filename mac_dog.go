@@ -1,14 +1,15 @@
 package main
-import(
- "fmt"
- "os"
- "io"
- "os/user"
- "regexp"
- "os/exec"
- "strings"
- "container/list"
- "bufio"
+
+import (
+	"bufio"
+	"container/list"
+	"fmt"
+	"io"
+	"os"
+	"os/exec"
+	"os/user"
+	"regexp"
+	"strings"
 )
 
 ///离线设备
@@ -20,7 +21,6 @@ func offline(offlineMac string){
 func online(onlineMac string){
   fmt.Println("上线设备：" + onlineMac)
 }
-
 
 func listString(list []string) string{
   var stringlist string
@@ -53,10 +53,11 @@ func containList(list list.List,contain string) bool {
 }
 
 func main(){
+  ip := os.Args[1]
   var err error
   var whoami []byte
-  fmt.Println("正在分析数据...")
-  cmd:=exec.Command("/bin/sh","-c","sudo nmap -sP '192.168.0.*'")
+  fmt.Println("正在扫描： " + ip)
+  cmd:=exec.Command("/bin/sh","-c","nmap -sP " + ip)
   if whoami,err = cmd.Output(); err != nil{
     fmt.Println(err)
     return
@@ -67,6 +68,7 @@ func main(){
    fmt.Println(uerr)
    return
   }
+
   homeDir = user.HomeDir
   file,e := os.OpenFile(homeDir+"/.maclist",os.O_CREATE|os.O_RDWR,0666)
   if e != nil {
