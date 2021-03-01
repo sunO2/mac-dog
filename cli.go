@@ -30,9 +30,9 @@ func Parse(point int){
 
 func main() {
 	Parse(2)///解析 flag 参数
-	router:=os.Args[1]
+	router := os.Args[1]
 	devices := fmt.Sprintf("%s",*device)
-	uname,ip,mac:=GetInfo(devices)
+	uname,ip,mac := GetInfo(devices)
     switch {
 		case router == "ssh":
 			fmt.Println("ssh 连接：device: " + devices)
@@ -78,7 +78,7 @@ func wake(deviceMac string){
  port: 端口号
 */
 func SshLogin(uname string,ip string,port int){
-	printError:=func(err error,mesg string){
+	printError := func(err error,mesg string){
 		if nil != err{
 			fmt.Println(mesg,err)
 		}
@@ -86,7 +86,7 @@ func SshLogin(uname string,ip string,port int){
 	fmt.Println("请输入密码")
 	var password string
 	fmt.Scanln(&password)
-	clinet,err:=ssh.Dial("tcp",fmt.Sprintf("%s:%d",ip,port),&ssh.ClientConfig{
+	clinet,err := ssh.Dial("tcp",fmt.Sprintf("%s:%d",ip,port),&ssh.ClientConfig{
 		User: uname,
 		Auth: []ssh.AuthMethod{ssh.Password(fmt.Sprintf(password))},
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
@@ -95,7 +95,7 @@ func SshLogin(uname string,ip string,port int){
 		},
 	})
 	printError(err,"ssh dial 错误")
-	session,err :=clinet.NewSession()
+	session,err := clinet.NewSession()
 	printError(err,"ssh 创建错误 错误")
 	defer session.Close()
 	session.Stdout = os.Stdout
