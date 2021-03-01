@@ -66,7 +66,7 @@ func wake(deviceMac string){
 	var err error
 	output,err = cmd.Output()
 	if nil != err{
-		fmt.Println(err)
+		fmt.Println("错误：" + fmt.Sprint(err))
 	}
 	fmt.Println(string(output))
 }
